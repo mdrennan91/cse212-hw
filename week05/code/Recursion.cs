@@ -15,7 +15,10 @@ public static class Recursion
     public static int SumSquaresRecursive(int n)
     {
         // TODO Start Problem 1
-        return 0;
+        if (n <= 0)
+            return 0;
+
+        return (n * n) + SumSquaresRecursive(n - 1);
     }
 
     /// <summary>
@@ -40,6 +43,17 @@ public static class Recursion
     public static void PermutationsChoose(List<string> results, string letters, int size, string word = "")
     {
         // TODO Start Problem 2
+        if (word.Length == size)
+        {
+            results.Add(word);
+            return;
+        }
+
+        foreach (char letter in letters)
+        {
+            string remaining = letters.Replace(letter.ToString(), "");
+            PermutationsChoose(results, remaining, size, word + letter);
+        }
     }
 
     /// <summary>
@@ -87,14 +101,14 @@ public static class Recursion
     public static decimal CountWaysToClimb(int s, Dictionary<int, decimal>? remember = null)
     {
         // Base Cases
-        if (s == 0)
+        if (s == 0) 
             return 0;
-        if (s == 1)
+        if (s == 1) 
             return 1;
-        if (s == 2)
-            return 2;
-        if (s == 3)
-            return 4;
+        if (s == 2) 
+            return 2; 
+        if (s == 3) 
+            return 4; 
 
         // TODO Start Problem 3
 
@@ -119,6 +133,19 @@ public static class Recursion
     public static void WildcardBinary(string pattern, List<string> results)
     {
         // TODO Start Problem 4
+        if (!pattern.Contains('*'))
+        {
+            results.Add(pattern);
+            return;
+        }
+
+        int index = pattern.IndexOf('*');
+
+        string replaceWithZero = pattern.Substring(0, index) + "0" + pattern.Substring(index + 1);
+        string replaceWithOne = pattern.Substring(0, index) + "1" + pattern.Substring(index + 1);
+
+        WildcardBinary(replaceWithZero, results);
+        WildcardBinary(replaceWithOne, results);
     }
 
     /// <summary>
@@ -137,6 +164,23 @@ public static class Recursion
 
         // TODO Start Problem 5
         // ADD CODE HERE
+        currPath.Add((x, y));
+
+        if (maze.IsEnd(x, y))
+        {
+            results.Add(currPath.AsString());
+            return;
+        }
+
+        var moves = new[] { (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1) };
+        foreach (var (nextX, nextY) in moves)
+        {
+            if (maze.IsValidMove(currPath, nextX, nextY))
+            {
+                var newPath = new List<ValueTuple<int, int>>(currPath);
+                SolveMaze(results, maze, nextX, nextY, newPath);
+            }
+        }
 
         // results.Add(currPath.AsString()); // Use this to add your path to the results array keeping track of complete maze solutions when you find the solution.
     }
